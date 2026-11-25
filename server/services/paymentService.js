@@ -42,8 +42,8 @@ export class PaymentService {
       throw new Error('There is no outstanding balance for this fee.');
     }
     // Expire abandoned mock/provider orders and reuse a still-live pending order.
-    db.prepare(\`UPDATE payment_transactions SET status = 'FAILED' WHERE fee_due_id = ? AND tenant_id = ? AND user_id = ? AND status = 'PENDING' AND created_at <= datetime('now', '-15 minutes')\`).run(feeDueId, tenantId, userId);
-    const pendingOrder = db.prepare(\`SELECT * FROM payment_transactions WHERE fee_due_id = ? AND tenant_id = ? AND user_id = ? AND status = 'PENDING' ORDER BY created_at DESC LIMIT 1\`).get(feeDueId, tenantId, userId);
+    db.prepare(`UPDATE payment_transactions SET status = 'FAILED' WHERE fee_due_id = ? AND tenant_id = ? AND user_id = ? AND status = 'PENDING' AND created_at <= datetime('now', '-15 minutes')`).run(feeDueId, tenantId, userId);
+    const pendingOrder = db.prepare(`SELECT * FROM payment_transactions WHERE fee_due_id = ? AND tenant_id = ? AND user_id = ? AND status = 'PENDING' ORDER BY created_at DESC LIMIT 1`).get(feeDueId, tenantId, userId);
     if (pendingOrder) {
       return {
         orderId: pendingOrder.razorpay_order_id,
